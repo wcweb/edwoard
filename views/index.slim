@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    title Slim Examples
+    meta name="keywords" content="template language"
+    meta name="author" content="author"
+	  script type="text/javascript" src="assets/jquery.min.js" 
+    script type="text/javascript" src="assets/jquery-ui-1.9.2.custom.min.js"
+    
+    script type="text/javascript" src="assets/flowplayer.min.js"
+    
+    link rel="stylesheet" type="text/css" href="assets/skin/minimalist.css"
+    link type="text/css" rel="stylesheet" href="assets/style.css"
+    /script type="text/javascript" src="assets/app.js"
+    script type="text/javascript" src="assets/jquery.scissorhands.js"
+
+  body
+  	h1 Markup examples
+    
+    /div class="flowplayer" id="player" data-swf="assets/flowplayer.swf" data-ratio="0.4167" data-cuepoints="[1.5, 2, 3, -1]"
+    a  id="player" href="http://0.0.0.0:9292/assets/video.mp4" style="display:block;width:520px;height:330px"
+      / video
+          /source type="video/video.mp4" src="assets/video.mp4">
+    div.scissorhands
+    javascript:
+      $(document).ready(function(){
+        $f("player", "assets/flowplayer-3.2.16.swf",{
+        clip:{
+          // autoPlay:false,
+          
+          onStart:function(){
+            $('.scissorhands').ScissorHands(
+              {
+              url:"/list",
+              cuepoints:[{title:"start",seekTime:60},{title:"middle",seekTime:80},{title:"end",seekTime:90}],//"/cuepoints",
+                playerAPI: $f('player')// .data("flowplayer")
+              }
+             );
+             
+          }
+         }
+        });
+         
+       });
+         
+
+          
+      
+      
+      
+      
+
