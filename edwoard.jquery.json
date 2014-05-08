@@ -1,0 +1,28 @@
+{
+  "name": "edwoard",
+  "title": "Video splicer in net.",
+  "description": "The best jQuery plugin ever.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/wcweb/edwoard.git",
+  "author": {
+    "name": "Chan9ry.ian",
+    "url": "https://github.com/wcweb"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wcweb/edwoard.git"
+  },
+  "bugs": "",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "~1.9"
+  },
+  "keywords": [
+    "jquery-plugin"
+  ]
+}

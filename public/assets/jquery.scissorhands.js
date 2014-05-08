@@ -54,7 +54,8 @@
         playerAPI = null,
         wrapper = {},
         events = [],
-        cuepoints=[],
+        cuepoints = [],
+		colors = ["#fcfcfc", "#fcfcfc"],
         //tracker={start:time,end:time,id:id}
 
         defaults = {
@@ -62,17 +63,16 @@
             paramsData: ''
         },
         contorl_panel_template = tmpl(
-            '<div id="content_panel"><div id="trackers"></div><div id="panels_line" style="display:none;"></div></div><div class="control_panel" id=control_panel><p><a href="#" class="add_track" id=add_track><span class="">增加轨道</span></a>'
-            +'<a id=finish_button class="finnish_button" href="#">完成截取</a><span class="output_codeline">等待截取...</span></p></div>'
+            '<div id="content_panel"><div id="panel_cues" class="panel"><div class="rail_cues" id="rail_cues"> </div></div><div id="trackers"></div><div id="panels_line" '+' style="display:none;"></div></div><div class="control_panel" id=control_panel><p><a href="#" class="add_track" id=add_track><span class="">增加轨道</span></a><div class="btn-group'+' dropup"><button type="button" class="btn btn-default">Dropup</button><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span'+' class="sr-only">Toggle Dropdown</span> </button><ul class="dropdown-menu"><li>cue1</li><li>cue1</li><li>cue1</li></ul></div>'
+            + '<a id=finish_button class="finnish_button" href="#">完成截取</a><span class="output_codeline">等待截取...</span></p></div>'
         ),
         cuepoints_templeate = tmpl(
-            '<div id="panel_cues" class="panel"><div class="rails">'+'<% for(var key in cuepoints){ %>'+
-            '<a class="cue" style="width:auto; display:block; position:absolute;left:<%= cuepoints[key]["position"]%>px;display: inline-block;background:green;" title=" <%= cuepoints[key]["title"] %> | <%= cuepoints[key].seekTime.toString().toHHMMSS() %>"><p class="">o</p></a>'+
-            '<% } %>'+
-            '</div></div>'
+             '<% for(var key in cuepoints){ %>' +
+            '<a class="cue" style="left:<%= cuepoints[key]["position"]%>px; background:<%= cuepoints[key]["color"]%>;" title=" <%= cuepoints[key]["title"] %> | <%= cuepoints[key].seekTime.toString().toHHMMSS() %>"><p class=""></p></a>' +
+            '<% } %>'
         ),
         track_template = tmpl(
-            '<div id="panel_<%= id %>" class="panel"><div id="rails_<%= id %>" class="rails"></div><div id="tracer_<%= id %>" class="tracer"></div><div id="handler_<%= id %>" class="handler"><a class="right_handler" ></a><a class="left_handler" ></a><p class="count_timer"><span class="clip_name"><%= clip_name %>:  </span><span class = ""> <a href="#" class="delete_track" data-target="<%= id %>">删除 </a></span><span class="left_time"><%= clip_start %></span><span> - </span><span class="right_time"><%= clip_end %></span></p></div></div>'
+            '<div id="panel_<%= id %>" class="panel"><div id="rails_<%= id %>" class="rails"></div><div id="tracer_<%= id %>" class="tracer"></div><div id="handler_<%= id %>" class="handler"><a class="right_handler " ></a><a class="left_handler " ></a><p class="count_timer"><span class="clip_name"><%= clip_name %>:  </span><span class = ""> <a href="#" class="delete_track" data-target="<%= id %>">删除 </a></span><span class="left_time"><%= clip_start %></span><span> - </span><span class="right_time"><%= clip_end %></span></p></div></div>'
         );
     // The actual plugin constructor
 
@@ -83,17 +83,17 @@
 
         playerAPI = this.options.playerAPI;
         // playerAPI.seekTo(time,fn)
-        
+
         this.cuepoints = this.options.cuepoints;
-        
+
         this._name = pluginName;
 
         this.trackers = [];
         this.trackers_sum = 0;
         this.init();
-        this.cuepoints=this.getCuepointsList();
-        
-        
+        this.cuepoints = this.getCuepointsList();
+
+
     }
 
     Plugin.prototype.init = function () {
@@ -102,23 +102,15 @@
         // the options via the instance, e.g. this.element
         // and this.options
         $(this.element).contents().remove();
-        
-        
-        // if(playerAPI.video.duration == null){
-            //this.options.playerAPI.getCommonClip().onUpdate(function(e){console.log("hwhwhwhwh")});
-        // }
-        
-        
-        
+
         $(this.element).append($(contorl_panel_template({})));
-        
-        
+
         //var start_clip = this.addTrack('片头'),
         //    end_clip = this.addTrack('片尾'),
         var init_one = this.addTrack(),
             that = this;
 
-        
+
         // control panel intrativities
         $("#add_track").click(function (e) {
             e.preventDefault();
@@ -128,12 +120,11 @@
             e.preventDefault();
             var trackers = that.trackers.slice(0),
                 output_string = '';
-            //console.log(trackers);
-            trackers=reOrder(trackers,"startTime");
-            
+
+            trackers = reOrder(trackers, "startTime");
+
             output_string += "0B,";
             for (var x = 0; x <= trackers.length - 1; x++) {
-                //console.log(trackers[x].startTime);
                 output_string += Math.round(trackers[x].startTime) + "-" + Math.round(trackers[x].endTime) + ",";
             }
             output_string += "0A";
@@ -142,7 +133,7 @@
         })
 
     }
-    function reOrder(arr, option){
+    function reOrder(arr, option) {
         for (var i = 0; i <= arr.length - 1; i++) {
             for (var j = i; j < arr.length; j++) {
                 if (arr[i][option] > arr[j][option]) {
@@ -154,19 +145,29 @@
         }
         return arr
     }
-    Plugin.prototype.renderCuePoints=function(){
-        cuepoints= this.options.cuepoints;
-        cuepoints= reOrder(cuepoints, "seekTime");
-       
-        for(var key in cuepoints){
-            cuepoints[key].position= cuepoints[key].seekTime*$(".rails").width()/playerAPI.getClip().duration;
-        }
-        
-        console.log(cuepoints);
-        $(this.element).children("#content_panel").prepend($(cuepoints_templeate({cuepoints:cuepoints})));
-        
+    function randomColor() {
+
+        var bg_colour = Math.floor(Math.random() * 16777215).toString(16)
+        bg_colour = "#" + ("000000" + bg_colour).slice(-6)
+        return bg_colour;
+
     }
-     
+    Plugin.prototype.renderCuePoints = function () {
+        cuepoints = this.options.cuepoints;
+        cuepoints = reOrder(cuepoints, "seekTime");
+
+        for (var key in cuepoints) {
+          
+          console.log($(".rails").width() ,cuepoints[key].seekTime,_getDuration());
+            cuepoints[key].position = cuepoints[key].seekTime * $(".rails").width() / _getDuration();
+            cuepoints[key].color = randomColor();
+        }
+        $(this.element).find("#rail_cues").contents().remove();
+
+        $(this.element).find("#rail_cues").append($(cuepoints_templeate({ cuepoints: cuepoints })));
+
+    }
+
     Plugin.prototype.addTrack = function (name) {
         var trackers = this.trackers,
             trackers_sum = this.trackers_sum;
@@ -175,7 +176,7 @@
         currentTracker = new_one;
         trackers.push(new_one);
 
-         $(this.element).children("#content_panel").children("#trackers").prepend(new_one.html());
+        $(this.element).children("#content_panel").children("#trackers").prepend(new_one.html());
 
         new_one.genneratEvent();
 
@@ -188,7 +189,7 @@
     function tracker(id, root, name) {
         this.id = id;
         this.startTime = 0;
-        this.endTime = playerAPI.getClip().duration;
+        this.endTime = _getDuration();
         this.root = root;
         this.name = name;
     }
@@ -197,11 +198,12 @@
         return { startTime: this.startTime, endTime: this.endTime };
     }
     tracker.prototype.html = function () {
-        return $(track_template({ 
-            'id': this.id, 
-            'clip_name': this.name ,
-            'clip_start':this.startTime.toString().toHHMMSS(),
-            'clip_end':this.endTime.toString().toHHMMSS()}));
+        return $(track_template({
+            'id': this.id,
+            'clip_name': this.name,
+            'clip_start': this.startTime.toString().toHHMMSS(),
+            'clip_end': this.endTime.toString().toHHMMSS()
+        }));
     }
 
     tracker.prototype.genneratEvent = function () {
@@ -239,13 +241,15 @@
             axis: "x",
             refreshPositions: true
         });
-        right_handler.on("mouseenter",function(event){
-            $("#panels_line").fadeIn();
-        })
-        right_handler.on("mouseleave",function(event){
+        //right_handler.on("mouseenter", function (event) {
+        //    //$("#panels_line").offset({ left: tracer.offset().left + tracer.width() });
+        //    $("#panels_line").fadeIn();
+
+        //})
+        right_handler.on("mouseleave", function (event) {
             $("#panels_line").fadeOut();
         })
-        right_handler.on("drag",{currentTracker:this}, function (event, ui) {
+        right_handler.on("drag", { currentTracker: this }, function (event, ui) {
             if (ui.position.left < left_handler.position().left - $(this).width()) return false;
 
             var new_width = Math.round(ui.position.left - left_handler.position().left
@@ -257,52 +261,55 @@
                 tracer.width(new_width);
             }
 
-               $("#panels_line").show();
-            $("#panels_line").offset({left:tracer.offset().left+tracer.width()});
-            console.log($("#panels_line").offset().left);
-            
-            _jumpTo((ui.offset.left - handlers.offset().left + $(this).width()) / handlers.width() ,
+            $("#panels_line").show();
+            $("#panels_line").offset({ left: tracer.offset().left + tracer.width() });
+
+
+            _jumpTo((ui.offset.left - handlers.offset().left + $(this).width()) / handlers.width() * 10,
                 currentTracker,
                 function () {
                     // var time = playerAPI.ready ? playerAPI.getTime() : playerAPI.getClip().duration;
                     // if (!time) time = 0;
-                    var time= _getCurrentTime();
+                    var time = _getCurrentTime();
                     handlers.find("span.right_time").html((time).toString().toHHMMSS());
                     that.endTime = time;
                 }
             );
-            
+
         });
-        left_handler.on("mouseenter",function(event){
-           //  $("#panels_line").fadeIn();
-           $("#panels_line").fadeIn();
-        })
-        left_handler.on("mouseleave",function(event){
+        //left_handler.on("mouseenter", function (event) {
+        //    //  $("#panels_line").fadeIn();
+        //    //$("#panels_line").offset({ left: tracer.offset().left });
+        //    $("#panels_line").fadeIn();
+        //})
+        left_handler.on("mouseleave", function (event) {
             $("#panels_line").fadeOut();
         })
         left_handler.on("drag", function (event, ui) {
-            if (ui.position.left > right_handler.position().left+$(this).width()) return false;
-            
+            if (ui.position.left > right_handler.position().left + $(this).width()) return false;
+
             tracer.width(Math.round(right_handler.position().left - ui.position.left + $(this).width()));
             tracer.offset({ top: null, left: Math.round(ui.offset.left + 0.5) });
-            //console.log((ui.offset.left-20 - $(this).width()) / handlers.width() * 10);
+
             $("#panels_line").show();
-            $("#panels_line").offset({left:tracer.offset().left});
-            console.log($("#panels_line").offset().left);
-            //console.log((ui.offset.left - handlers.offset().left) / handlers.width() );
-            _jumpTo((ui.offset.left - handlers.offset().left) / handlers.width() ,
+            $("#panels_line").offset({ left: tracer.offset().left });
+
+            _jumpTo((ui.offset.left - handlers.offset().left) / handlers.width() * 10,
                 currentTracker,
                 function () {
                     // var time = playerAPI.ready ? playerAPI.video.time : 0;
                     //if (!time) time = 0;
-                    var time= _getCurrentTime();
-                    handlers.find("span.left_time").html((time).toString().toHHMMSS());
-                    that.startTime = time;
+                    var time = _getCurrentTime();
+                    if (time != null) {
+                        handlers.find("span.left_time").html((time).toString().toHHMMSS());
+                        that.startTime = time;
+                    }
                 }
-            );
+              );
+                
         });
-        
-        
+
+
         delete_track.on("click", function (event) {
             event.preventDefault();
             //$(wrapper).contents.remove($($(this).attr('data-target')));
@@ -313,47 +320,81 @@
         })
     }
 
-    function _jumpTo(persence,currentTracker, callback){
-        if(playerAPI.seekTo == undefined){
-            playerAPI.seek(persence*playerAPI.getClip().duration);
+    function _jumpTo(persence, currentTracker, callback) {
+        if (playerAPI.seekTo == undefined) {
+            playerAPI.seek(persence * _getDuration());
             callback.call(currentTracker);
-        }else{
-            playerAPI.seekTo(time,callback);
+        } else {
+            playerAPI.seekTo(persence, callback);
         }
     }
-    function _getCurrentTime(){
-        return playerAPI.getTime();
+    function _getCurrentTime() {
+        return playerAPI.ready ? playerAPI.video.time : playerAPI.video.duration;
+        //return playerAPI.getTime();
     }
-
-
+    function _getDuration() {
+      
+      console.log(playerAPI.getClip().duration, playerAPI.video);
+        //return playerAPI.ready ? playerAPI.video.duration : -1;
+        return playerAPI ? playerAPI.getClip().duration : 0;
+    }
 
     Plugin.prototype.getCuepointsList = function () {
         var that = this;
-        $.ajax({
-            type: "GET",
-            url: this.options.url,
-            data: this.paramsData,
-            // crossDomain:true,
-            //dataType: "json",
-            dataType:"xml",
-            jsonp: false
+        if (this.options.url.constructor.name == "Array") {
+            $(this.options.url).each(function (index) {
+                $.ajax({
+                    type: "GET",
+                    url: that.options.url[index],
+                    data: that.paramsData,
+                    // crossDomain:true,
+                    //dataType: "json",
+                    dataType: "xml",
+                    jsonp: false
 
-        }).done(function (results) {
-            console.log($(results).find("item").length);
-            var cps = $(results).find("item");
-            cps.each(function(index, el){
-                that.options.cuepoints.push({
-                    title:$(el).children("title").text(),
-                    seekTime:$(el).children("seekTime").text()/1000
+                }).done(function (results) {
+
+                    var cps = $(results).find("item");
+                    cps.each(function (index, el) {
+                        that.options.cuepoints.push({
+                            title: $(el).children("title").text(),
+                            seekTime: $(el).children("seekTime").text() / 1000
+                        });
+
+                    })
+
+                    that.renderCuePoints();
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+
                 });
-                
-            })
-            console.log("success"+that.options.cuepoints);
-            that.renderCuePoints();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            // console.log(textStatus);
-        });
-        console.log(cuepoints);
+            });
+        } else {
+
+            $.ajax({
+                type: "GET",
+                url: this.options.url,
+                data: this.paramsData,
+                // crossDomain:true,
+                //dataType: "json",
+                dataType: "xml",
+                jsonp: false
+
+            }).done(function (results) {
+
+                var cps = $(results).find("item");
+                cps.each(function (index, el) {
+                    that.options.cuepoints.push({
+                        title: $(el).children("title").text(),
+                        seekTime: $(el).children("seekTime").text() / 1000
+                    });
+
+                })
+
+                that.renderCuePoints();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+
+            });
+        }
     };
 
 

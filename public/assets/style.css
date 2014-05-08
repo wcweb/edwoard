@@ -105,32 +105,57 @@ input, select {
 }
 /* @end */
 .scissorhands{
-    background:#fcfcfc;
+    background:#eee;
     border:1px solid #eee;
 }
 /* @group player */
 .flowplayer {   
     margin-left:20px;
-    width: 500px;
+    width: 600px;
+    margin-bottom:2px;
+    *overflow:hidden;
+
+    background:#FCCB8C;
+}
+.flowplayer .fp-embed,
+.flowplayer > a
+ {
+    display: none;
+}
+.fp-controls{
+	overflow:hidden;
 }
 /* @end */
 /* @group control_pannel */
 #control_panel {   
     margin-left:20px;
-    width: 500px;
+    width: 600px;
     border: 1px solid #eee;
     padding: 10px 0;
 }
 /* @end */ 
 /* @group panel */
-.panel {
-    margin-left:20px;  
-}
+
 .panel,
-.panel_cues{
+#panel_cues{
     position:relative;
-    width: 500px;
-    height: 50px;
+    width: 600px;
+}
+.panel {
+    margin-left:19px;    
+    margin-bottom: 10px;
+    height: 60px;
+}
+#panel_cues {
+    height:10px;
+}
+.cue {
+    width: 10px;
+    display: block;
+    position: absolute;
+    display: inline-block;
+    background:#f3961c;
+    height: 10px;
 }
 #content_panel{
     position:relative;
@@ -144,6 +169,7 @@ input, select {
     top:0px;
     margin-left: 20px;
 }
+.rail_cues,
 .rails {
     position: absolute;
     width: 100%;
@@ -153,18 +179,21 @@ input, select {
 /*    border-top:3px solid #eee;*/
     border-bottom:3px solid #eee;
 }
+.rail_cues {
+    height: 10px;
+	background:#cacaca;
+}
 .tracer {
     position:absolute;
     width: 100%;
     height: 30px;
-    background: #FCFCFC;
+    background: #f3961c;
     z-index:1000;
     border-bottom:1px dashed #eee;
 }
 .handler{
     display:block;
 }
-
 .left_handler{
     position:absolute;
     top:1px;
@@ -178,13 +207,13 @@ input, select {
 
 .left_handler:hover,
 .right_handler:hover{
-    background:#eee;
+	
     cursor: col-resize;
 }
 
 .right_handler{
     
-    position:absolute;arr
+    position:absolute;
     top:1px;
     right:0;
     width: 20px;
@@ -229,5 +258,7 @@ span.clip_name{
     padding: 4px;
     text-decoration: none;
 }
+.output_codeline {
+    font-size: 8px;
+}
 /* @end */
-
