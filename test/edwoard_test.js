@@ -1,3 +1,4 @@
+/*global $f */
 (function($) {
   /*
     ======== A Handy Little QUnit Reference ========
@@ -20,43 +21,45 @@
       throws(block, [expected], [message])
   */
 
-  module('jQuery#awesome', {
-    // This will run before each test in this module.
-    setup: function() {
-      this.elems = $('#qunit-fixture').children();
-    }
-  });
-
-  test('is chainable', function() {
-    expect(1);
-    // Not a bad test to run on collection methods.
-    strictEqual(this.elems.awesome(), this.elems, 'should be chainable');
-  });
-
-  test('is awesome', function() {
-    expect(1);
-    strictEqual(this.elems.awesome().text(), 'awesome0awesome1awesome2', 'should be awesome');
-  });
-
-  module('jQuery.awesome');
-
-  test('is awesome', function() {
-    expect(2);
-    strictEqual($.awesome(), 'awesome.', 'should be awesome');
-    strictEqual($.awesome({punctuation: '!'}), 'awesome!', 'should be thoroughly awesome');
-  });
 
   module(':awesome selector', {
     // This will run before each test in this module.
     setup: function() {
-      this.elems = $('#qunit-fixture').children();
+      // $(document).ready(function(){
+ //        $f("player", "./test/assets/flowplayer-3.2.16.swf",{
+ //        clip:{
+ //          // autoPlay:false,
+ //        
+ //          onStart:function(){
+ //            $('.scissorhands').ScissorHands(
+ //              {
+ //                url:"/list",
+ //                cuepoints:[
+ //                  {title:"start",seekTime:60},{title:"middle",seekTime:80},{title:"end",seekTime:90}
+ //                ],//"/cuepoints",
+ //                playerAPI: $f('player')// .data("flowplayer")
+ //              }
+ //             );
+ //           
+ //          }
+ //         }
+ //       
+ //        });
+ //       
+ //            
+ //       });
     }
   });
 
-  test('is awesome', function() {
-    expect(1);
-    // Use deepEqual & .get() when comparing jQuery objects.
-    deepEqual(this.elems.filter(':awesome').get(), this.elems.last().get(), 'knows awesome when it sees it');
+
+  
+  test(' sc', function(){
+    expect(2);
+    
+    ok( true, "video has loaded and is ready to play" );
+    ok( true, "video has loaded and is ready to play" );
+    
   });
+  
 
 }(jQuery));

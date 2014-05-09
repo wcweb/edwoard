@@ -8,8 +8,26 @@
   <!-- Load local QUnit. -->
   <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css" media="screen">
   <script src="../bower_components/qunit/qunit/qunit.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="./assets/skin/minimalist.css"/>
+  <link type="text/css" rel="stylesheet" href="assets/style.css" />
+
+  
+  
+  <script type="text/javascript" src="./assets/jquery-ui-1.9.2.custom.min.js"></script>
+  
+  <script type="text/javascript" src="./assets/flowplayer.min.js"></script>
+  
+  
+  
   <!-- Load local lib and tests. -->
   <script src="../src/edwoard.js"></script>
+  
+
+ 
+
+  
+  
   <script src="edwoard_test.js"></script>
   <!-- Removing access to jQuery and $. But it'll still be available as _$, if
        you REALLY want to mess around with jQuery in the console. REMEMBER WE
@@ -17,11 +35,21 @@
   <script>window._$ = jQuery.noConflict(true);</script>
 </head>
 <body>
+  
+  <div class="flowplayer" id="player" data-swf="./assets/flowplayer.swf" data-ratio="0.4167" data-cuepoints="[1.5, 2, 3, -1]">
+   
+      <video src="./assets/video.mp4" >
+      </video>
+  
+  </div>
+  <div class="scissorhands" ></div>
+  
   <div id="qunit"></div>
   <div id="qunit-fixture">
     <span>lame test markup</span>
     <span>normal test markup</span>
     <span>awesome test markup</span>
   </div>
+  
 </body>
 </html>
