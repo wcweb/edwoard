@@ -25,29 +25,29 @@
   module(':awesome selector', {
     // This will run before each test in this module.
     setup: function() {
-      // $(document).ready(function(){
- //        $f("player", "./test/assets/flowplayer-3.2.16.swf",{
- //        clip:{
- //          // autoPlay:false,
- //        
- //          onStart:function(){
- //            $('.scissorhands').ScissorHands(
- //              {
- //                url:"/list",
- //                cuepoints:[
- //                  {title:"start",seekTime:60},{title:"middle",seekTime:80},{title:"end",seekTime:90}
- //                ],//"/cuepoints",
- //                playerAPI: $f('player')// .data("flowplayer")
- //              }
- //             );
- //           
- //          }
- //         }
- //       
- //        });
- //       
- //            
- //       });
+      $(document).ready(function(){
+        $f("player", "./test/assets/flowplayer-3.2.16.swf",{
+        clip:{
+          // autoPlay:false,
+        
+          onStart:function(){
+            $('.scissorhands').ScissorHands(
+              {
+                url:"/list",
+                cuepoints:[
+                  {title:"start",seekTime:60},{title:"middle",seekTime:80},{title:"end",seekTime:90}
+                ],//"/cuepoints",
+                playerAPI: $f('player')// .data("flowplayer")
+              }
+             );
+           
+          }
+         }
+       
+        });
+       
+            
+       });
     }
   });
 

@@ -85,11 +85,14 @@
     this._name = pluginName;
 
     this.trackers = [];
-    this.trackers_sum = 0;
     this.init();
     this.cuepoints = this.getCuepointsList();
 
-
+    playerAPI.bind('progress', function(e,api,pos){
+      console.log(e);
+      console.log(pos);
+      
+    })
   }
 
   Plugin.prototype.init = function() {
@@ -142,7 +145,19 @@
       var start = $(e.target).parent().attr('data-cue-start');
       var end = $(e.target).parent().attr('data-cue-end');
       var new_one = that.addTrack(name, start, end);
-    })
+    });
+    var that = this;
+      $(document).on('click','.delete_track',function(e){
+        e.preventDefault();
+        //$(wrapper).contents.remove($($(this).attr('data-target')));
+        var target_id = $(e.target).attr('data-target');
+        console.log('remove',target_id);
+        $("#panel_" + target_id).remove();
+        console.log(that);
+        that.trackers.splice(target_id-1, 1);
+        
+        
+      });
     
   }
 
@@ -206,7 +221,7 @@
 
   Plugin.prototype.addTrack = function(name,start,end) {
     var trackers = this.trackers,
-      trackers_sum = this.trackers_sum;
+      trackers_sum = this.trackers.length;
     if (!name) name = '片段 ' + trackers_sum;
     
     console.log(name, start, end);
@@ -218,8 +233,6 @@
     $(this.element).children("#content_panel").children("#trackers").prepend(new_one.html());
 
     new_one.genneratEvent();
-
-    this.trackers_sum += 1;
 
     return new_one;
   }
@@ -269,13 +282,13 @@
     var id = this.id,
       that = this,
       trackers = this.root.trackers,
-      trackers_sum = this.root.trackers_sum;
+      trackers_sum = this.root.trackers.length;
 
     var left_handler = $("#handler_" + id + " .left_handler"),
       right_handler = $("#handler_" + id + " .right_handler"),
       handlers = $("#handler_" + id),
       tracer = $("#tracer_" + id),
-      delete_track = $("#handler_" + id + " .delete_track"),
+      //delete_track = $("#handler_" + id + " .delete_track"),
       startTime = 0,
       endTime = 0;
 
@@ -341,7 +354,7 @@
           // var time = playerAPI.ready ? playerAPI.getTime() : playerAPI.getClip().duration;
           // if (!time) time = 0;
           var time = _getCurrentTime();
-          console.log("left :"+ time);
+          console.log("right :"+ time);
           handlers.siblings('.count_timer').find("span.right_time").html((time).toString().toHHMMSS());
           that.endTime = time;
         }
@@ -388,14 +401,16 @@
     });
 
 
-    delete_track.on("click", function(event) {
-      event.preventDefault();
-      //$(wrapper).contents.remove($($(this).attr('data-target')));
-      var target_id = $(this).attr('data-target');
-      $("#panel_" + target_id).remove();
-      trackers.splice(target_id, 1);
-
-    })
+    // delete_track.on("click", function(event) {
+ //      event.preventDefault();
+ //      //$(wrapper).contents.remove($($(this).attr('data-target')));
+ //      var target_id = $(this).attr('data-target');
+ //      console.log('remove',target_id);
+ //      $("#panel_" + target_id).remove();
+ //      trackers.splice(target_id, 1);
+ //      console.dir(trackers);
+ // 
+ //    })
   }
 
   function _jumpTo(persence, currentTracker, callback) {
@@ -408,13 +423,12 @@
   }
 
   function _getCurrentTime() {
-    // @TODO playerAPI.video???
-    console.log(playerAPI.getTime());
-    if(playerAPI){
-      return playerAPI.getTime()|| -1;
-      //return playerAPI.ready ? playerAPI.video.time : playerAPI.video.duration;
-    }
-    return -1;
+    // @TODO playerAPI.video??? with class flowplayer
+
+
+      //return playerAPI.getTime()|| -1;
+      return playerAPI.ready ? playerAPI.video.time : playerAPI.video.duration;
+
     //return playerAPI.getTime();
   }
 
@@ -422,8 +436,8 @@
 
 
     if (playerAPI) {
-      //return playerAPI.ready ? playerAPI.video.duration : -1;
-      return playerAPI ? playerAPI.getClip().duration : 0;
+      return playerAPI.ready ? playerAPI.video.duration : -1;
+      //return playerAPI ? playerAPI.getClip().duration : 0;
     }
     return -1;
 
